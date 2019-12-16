@@ -56,7 +56,49 @@ function ImageObject(props){
     this.y +=this.dy;
   }
 }
+function Circle(x , y, dx, dy,r ){
+  this.x = x;
+  this.y = y;
+  this.dx = dx;
+  this.dy = dy;
+  this.radius = r;
+  this.color = 'rgba(190, 225, 239, 0.4)';
+  this.draw = function(){
 
+    c.beginPath();
+    c.arc(this.x,this.y,this.radius,0,Math.PI *2, false);
+    c.fillStyle = this.color;
+    c.fill();
+  }
+
+  this.update = function(){
+    if (this.x + this.radius> innerWidth || this.x < this.radius){
+      this.dx = -this.dx;
+
+    }
+    if (this.y + this.radius> innerHeight ||this.y < this.radius){
+      this.dy = -this.dy;
+
+    }
+    this.x+=this.dx;
+    this.y+=this.dy;
+
+  }
+}
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min) ) + min;
+}
+const circleArray = [];
+for (var i = 0; i < 200; i++){
+
+  var dx = Math.random() *0.2 * (-1)**getRndInteger(-1,1);
+  var dy = Math.random() * 0.2 *(-1)**getRndInteger(-1,1);
+  var radius = Math.random() * 3;
+  var x = Math.random() * (innerWidth - radius * 2) +radius;
+  var y = Math.random() * (innerHeight - radius * 2) + radius;
+
+  circleArray.push(new Circle(x,y,dx,dy,radius));
+}
 var image = new ImageObject({
   src:'./poppitz.jpg',
   x:150,
@@ -65,12 +107,31 @@ var image = new ImageObject({
   dx: 5,
   dy: 5
 });
+const imageArray = [];
+for (var i = 0; i <5; i++){
+  imageArray.push(new ImageObject({
+    src:'./poppitz.jpg',
+    x:getRndInteger(0,1200),
+    y:getRndInteger(0,600),
+    width:window.innerWidth * 0.1,
+    dx: getRndInteger(-10,10) ,
+    dy: getRndInteger(-10,10)
+  }));
+}
+
 
 function animate(){
   requestAnimationFrame(animate);
   c.clearRect(0,0,innerWidth,innerHeight);
-  image.draw();
-  image.update();
+  for (var i = 0; i < circleArray.length;i++){
+    circleArray[i].draw();
+    circleArray[i].update();
+  }
+  for (var i =0; i <imageArray.length; i++){
+    imageArray[i].draw();
+    imageArray[i].update();
+  }
+
 }
 
 requestAnimationFrame(animate);
